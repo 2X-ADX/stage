@@ -12,7 +12,17 @@ button:hover{background:#006aa8;}
 .sigbox{background:#fff;border:1px dashed #9aa1ab;border-radius:10px;padding:18px;overflow-x:auto;}
 ol,ul{margin:6px 0 0;padding-left:20px;} li{margin:3px 0;}
 details{margin-top:8px;} summary{cursor:pointer;font-weight:600;}
-</style></head><body><div class="wrap">
+</style></head><body>
+<div id="pwd" style="display:flex;align-items:center;justify-content:center;min-height:100vh;">
+  <div style="background:#fff;border:1px solid #d9dce1;border-radius:10px;padding:32px;max-width:400px;text-align:center;">
+    <h2>Enter Password</h2>
+    <input type="password" id="p" placeholder="Password" autofocus>
+    <div id="e" style="display:none;color:#b42318;font-size:13px;margin:12px 0;"></div>
+    <button onclick="unlock()">View Signature</button>
+  </div>
+</div>
+<div id="sig" style="display:none;">
+<div class="wrap">
 <h1>ICS Global Account Team: Email Signature</h1>
 <p class="sub">Two clicks: copy it here, paste it into Outlook.</p>
 <div class="step"><h2>Step 1. Copy the signature</h2>
@@ -47,4 +57,35 @@ st.textContent=ok?'Copied. Now paste into Outlook.':'Not copied. Press Ctrl+C (C
 });
 sig.addEventListener('click',sel);
 })();
-</script></body></html>
+</script>
+</div>
+<script>
+function unlock(){
+  var pwd=document.getElementById('p').value;
+  if(pwd==='WKCS2026'){
+    document.getElementById('pwd').style.display='none';
+    document.getElementById('sig').style.display='block';
+    init();
+  }else{
+    document.getElementById('e').style.display='block';
+    document.getElementById('e').textContent='Wrong password';
+    document.getElementById('p').value='';
+  }
+}
+function init(){
+  var btn=document.getElementById('copyBtn'),st=document.getElementById('status'),box=document.getElementById('sig').querySelector('div.sigbox div');
+  function sel(){
+    var r=document.createRange();r.selectNodeContents(box);
+    var s=window.getSelection();s.removeAllRanges();s.addRange(r);
+  }
+  btn.addEventListener('click',function(){
+    sel();
+    var ok=false;try{ok=document.execCommand('copy');}catch(e){}
+    st.style.color=ok?'#1a7f37':'#b42318';
+    st.textContent=ok?'Copied.':'Failed.';
+  });
+  box.addEventListener('click',sel);
+}
+document.getElementById('p').addEventListener('keypress',function(e){if(e.key==='Enter')unlock();});
+</script>
+</body></html>
